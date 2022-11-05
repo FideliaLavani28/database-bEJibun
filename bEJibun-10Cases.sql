@@ -46,7 +46,9 @@ WHERE c.CustomerGender != St.StaffGender AND MONTH(SalesDate)=02
 GROUP BY St.StaffID, StaffName, StaffSalary
 
 
---5. Display Customer Initial (obtained from the first letter and the last letter of the customer’s name), Transaction Date (obtained from the sales date in ‘mm dd, yyyy’ Format), and Quantity from sales transactions which are done by female customer, and the sales quantity is higher than the average quantity of all sales transaction.
+--5. Display Customer Initial (obtained from the first letter and the last letter of the customer’s name), 
+--Transaction Date (obtained from the sales date in ‘mm dd, yyyy’ Format), and Quantity from sales transactions which are done by female customer, 
+--and the sales quantity is higher than the average quantity of all sales transaction.
 --(alias subquery)
 SELECT [Customer Initial]=CONCAT(LEFT(CustomerName,1),RIGHT(CustomerName,1)), [Transaction Date]=FORMAT(SalesDate,'MM dd, yyyy'),[Quantity]=SalesQty
 FROM Customer c JOIN SalesTransaction ST ON c.CustomerID=ST.CustomerID JOIN SalesTransactionDetail STD ON ST.TransactionID=STD.TransactionID,(
@@ -75,11 +77,12 @@ WHERE PurchaseQty > x.MinQty AND CAST(SUBSTRING(ItemID,3,LEN(ItemID)) AS INT) % 
 --Total Purchased Quantity is greater than the maximum quantity of all transactions that arrived less than a week after the purchase.
 --(alias subquery)
 SELECT s.StaffName, VendorName, PT.PurchaseID, [TotalPurchasedQuantity]=SUM(PurchaseQty), [Ordered Day]=CONCAT(DATEDIFF(day,PurchaseDate,GETDATE()),' Days ago')
-FROM Staff s JOIN PurchaseTransaction PT ON PT.StaffID=s.StaffID JOIN PurchaseTransactionDetail PTD ON  PTD.PurchaseID=PT.PurchaseID JOIN Vendor v ON v.VendorID=PT.VendorID, (
-	SELECT [MaxQty]=MAX(PurchaseQty)
-	FROM PurchaseTransactionDetail 
+FROM Staff s JOIN PurchaseTransaction PT ON PT.StaffID=s.StaffID JOIN PurchaseTransactionDetail PTD ON  PTD.PurchaseID=PT.PurchaseID 
+	JOIN Vendor v ON v.VendorID=PT.VendorID, (
+		SELECT [MaxQty]=MAX(PurchaseQty)
+		FROM PurchaseTransactionDetail 
 
-)x
+	)x
 WHERE DATEDIFF(day,PurchaseDate,ArrivalDate)<7 
 GROUP BY s.StaffName, VendorName, PT.PurchaseID, PurchaseDate, x.MaxQty
 HAVING x.MaxQty<SUM(PurchaseQty)
