@@ -66,8 +66,7 @@ WHERE CustomerGender='Female' AND SalesQty > x.AvgQty
 SELECT [ID]=LOWER(PT.VendorID), VendorName, [Phone Number]=CONCAT('+62',SUBSTRING(VendorPhone,2,LEN(VendorPhone)))
 FROM Vendor v JOIN PurchaseTransaction PT ON v.VendorID=PT.VendorID JOIN PurchaseTransactionDetail PTD ON PTD.PurchaseID=PT.PurchaseID, (
 	SELECT [MinQty]= MIN(PurchaseQty)
-	FROM PurchaseTransaction PT , PurchaseTransactionDetail PTD
-	WHERE PT.PurchaseID=PTD.PurchaseID
+	FROM PurchaseTransaction PT JOIN PurchaseTransactionDetail PTD ON PT.PurchaseID=PTD.PurchaseID
 )x
 WHERE PurchaseQty > x.MinQty AND CAST(SUBSTRING(ItemID,3,LEN(ItemID)) AS INT) % 2=1 
 
