@@ -95,8 +95,8 @@ SELECT TOP 2 [Day]=DATENAME(WEEKDAY,SalesDate), [Item Sales Amount]=COUNT(DISTIN
 FROM SalesTransaction ST JOIN SalesTransactionDetail STD ON ST.TransactionID=STD.TransactionID 
 	JOIN Item i ON STD.ItemID=i.ItemID, (
 		SELECT [AvgPrice]=AVG(Price)
-		FROM Item i, ItemType it
-		WHERE it.ItemTypeID=i.ItemTypeID AND ItemTypeName IN ('Electronic','Gadgets') 
+		FROM Item i JOIN ItemType it ON it.ItemTypeID=i.ItemTypeID
+		WHERE ItemTypeName IN ('Electronic','Gadgets') 
 	) x
 WHERE Price < x.AvgPrice
 GROUP BY DATENAME(WEEKDAY,SalesDate)
