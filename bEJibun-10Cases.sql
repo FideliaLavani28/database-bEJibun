@@ -93,12 +93,12 @@ HAVING x.MaxQty<SUM(PurchaseQty)
 --with the type of either ‘Electronic’ or ‘Gadgets’. Display only the two data with the smallest sales transaction count.
 --(alias subquery)
 SELECT TOP 2 [Day]=DATENAME(WEEKDAY,SalesDate), [Item Sales Amount]=COUNT(DISTINCT STD.ItemID)
-FROM SalesTransaction ST , SalesTransactionDetail STD, Item i, ItemType it,(
+FROM SalesTransaction ST , SalesTransactionDetail STD, Item i, (
 	SELECT [AvgPrice]=AVG(Price)
 	FROM Item i, ItemType it
 	WHERE it.ItemTypeID=i.ItemTypeID AND ItemTypeName IN ('Electronic','Gadgets') 
 ) x
-WHERE ST.TransactionID=STD.TransactionID AND STD.ItemID=i.ItemID AND it.ItemTypeID=i.ItemTypeID AND Price < x.AvgPrice
+WHERE ST.TransactionID=STD.TransactionID AND STD.ItemID=i.ItemID AND Price < x.AvgPrice
 GROUP BY DATENAME(WEEKDAY,SalesDate)
 ORDER BY [Item Sales Amount] ASC
 
